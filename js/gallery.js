@@ -86,16 +86,24 @@ const image = images
   .join("");
 gallery.insertAdjacentHTML("beforeend", image);
 
+let instance;
 gallery.addEventListener("click", function selectImg(event) {
   event.preventDefault();
   const selectedImg = event.target.dataset.source;
   console.log(selectedImg);
-  const instance = basicLightbox.create(`		<img src="${selectedImg}">`);
+  instance = basicLightbox.create(`		<img src="${selectedImg}">`);
   instance.show();
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      instance.close();
-    }
-  });
+  document.addEventListener("keydown", handleKeyDown);
 });
+
+function handleKeyDown(event) {
+  if (event.key === "Escape") {
+    closeInstance();
+  }
+}
+function closeInstance() {
+  if (instance && instance.visible()) {
+    instance.close();
+    document.removeEventListener("keydown", handleKeyDown);
+  }
+}
