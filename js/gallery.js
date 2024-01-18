@@ -63,9 +63,7 @@ const images = [
     description: "Lighthouse Coast Sea",
   },
 ];
-const gallery = document.querySelector(".gallery");
-const galleryItem = document.querySelector(".gallery-item");
-const source = document.querySelector("[data-source]");
+
 const image = images
   .map(
     (img) =>
@@ -73,7 +71,7 @@ const image = images
         <a class="gallery-link" href="${img.original} download" >
           <img
             class="gallery-image"
-            src ="${img.preview}"
+            src="${img.preview}"
             data-source="${img.original}"
             width="360px"
             height="200px"
@@ -84,16 +82,24 @@ const image = images
       </li>`
   )
   .join("");
+const gallery = document.querySelector(".gallery");
 gallery.insertAdjacentHTML("beforeend", image);
 
+const source = document.querySelector("[data-source]");
 let instance;
+
 gallery.addEventListener("click", function selectImg(event) {
   event.preventDefault();
   const selectedImg = event.target.dataset.source;
-  console.log(selectedImg);
-  instance = basicLightbox.create(`		<img src="${selectedImg}">`);
+  instance = basicLightbox.create(`<img src="${selectedImg}">`, {
+    onShow: (instance) => {
+      document.addEventListener("keydown", handleKeyDown);
+    },
+    onClose: (instance) => {
+      document.removeEventListener("keydown", handleKeyDown);
+    },
+  });
   instance.show();
-  document.addEventListener("keydown", handleKeyDown);
 });
 
 function handleKeyDown(event) {
@@ -104,6 +110,5 @@ function handleKeyDown(event) {
 function closeInstance() {
   if (instance && instance.visible()) {
     instance.close();
-    document.removeEventListener("keydown", handleKeyDown);
   }
 }
