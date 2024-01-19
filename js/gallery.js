@@ -68,7 +68,7 @@ const image = images
   .map(
     (img) =>
       ` <li class="gallery-item">
-        <a class="gallery-link" href="${img.original} download" >
+        <a class="gallery-link" href="${img.original}">
           <img
             class="gallery-image"
             src="${img.preview}"
@@ -85,11 +85,13 @@ const image = images
 const gallery = document.querySelector(".gallery");
 gallery.insertAdjacentHTML("beforeend", image);
 
-const source = document.querySelector("[data-source]");
 let instance;
 
 gallery.addEventListener("click", function selectImg(event) {
   event.preventDefault();
+  if (event.target.tagName !== "IMG") {
+    return;
+  }
   const selectedImg = event.target.dataset.source;
   instance = basicLightbox.create(`<img src="${selectedImg}">`, {
     onShow: (instance) => {
@@ -104,11 +106,6 @@ gallery.addEventListener("click", function selectImg(event) {
 
 function handleKeyDown(event) {
   if (event.key === "Escape") {
-    closeInstance();
-  }
-}
-function closeInstance() {
-  if (instance && instance.visible()) {
     instance.close();
   }
 }
